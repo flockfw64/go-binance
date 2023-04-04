@@ -29,6 +29,24 @@ func (s *StartUserStreamService) Do(ctx context.Context, opts ...RequestOption) 
 	return listenKey, nil
 }
 
+func (s *StartUserStreamService) DoCustomeKey(ctx context.Context, key string, opts ...RequestOption) (listenKey string, err error) {
+	r := &request{
+		method:   http.MethodPost,
+		endpoint: "/api/v3/userDataStream",
+		secType:  secTypeAPIKey,
+	}
+	data, err := s.c.callAPI(ctx, r, opts...)
+	if err != nil {
+		return "", err
+	}
+	j, err := newJSON(data)
+	if err != nil {
+		return "", err
+	}
+	listenKey = j.Get(key).MustString()
+	return listenKey, nil
+}
+
 // KeepaliveUserStreamService update listen key
 type KeepaliveUserStreamService struct {
 	c         *Client
