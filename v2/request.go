@@ -113,3 +113,15 @@ func WithHeaders(header http.Header) RequestOption {
 		r.header = header.Clone()
 	}
 }
+
+func ReplacePath(r string) RequestOption {
+	return func(req *request) {
+		req.endpoint = r
+	}
+}
+
+func WithSegType(segType secType) RequestOption {
+	return func(req *request) {
+		req.secType = segType
+	}
+}

@@ -29,6 +29,25 @@ func (s *GetAccountService) Do(ctx context.Context, opts ...RequestOption) (res 
 	return res, nil
 }
 
+func GetAccountServiceGeneric[T any](c *Client, ctx context.Context, opts ...RequestOption) (T, error) {
+	var t T
+
+	g := GetAccountService{c: c}
+
+	r := &request{
+		method:   http.MethodGet,
+		endpoint: "/api/v3/account",
+		secType:  secTypeSigned,
+	}
+	data, err := g.c.callAPI(ctx, r, opts...)
+	if err != nil {
+		return t, err
+	}
+
+	_ = json.Unmarshal(data, &t)
+	return t, nil
+}
+
 // Account define account info
 type Account struct {
 	MakerCommission  int64     `json:"makerCommission"`
